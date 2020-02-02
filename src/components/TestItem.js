@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import AddStep from './AddStep';
+import AddTest from './AddTest';
 
 class TestItem extends PureComponent {
 
@@ -15,7 +16,13 @@ class TestItem extends PureComponent {
   //ws = new WebSocket('ws://localhost:8080/ws');
 
   componentDidMount() {
-    this.askForData(this.props.match.params.testId).then(res => {
+    this.update(this.props.match.params.testId);
+  }
+
+  update(testId) {
+    this.askForData(testId).then(res => {
+      if (!res)
+        return res;
       this.setState({ 'steps': res.steps, name: res.name });
     });
   }
@@ -47,20 +54,19 @@ class TestItem extends PureComponent {
   renderItem(item, key) {
     const { name, description, id } = item;
     return (<div key={key}>
-      <a href="http://localhost:8080/test/{id}">TestItem
+      <div><b>Test Step:</b>
         name: <em>{name}</em> description <em>{description}</em>
-      </a>
-
-      <button>x</button>
+      </div>
     </div>);
   }
 
   render() {
     const { name, steps } = this.state;
+    const testId          = this.props.match.params.testId;
     return (<div>
         <h1>TestItem name: <em>{name}</em></h1>
         {steps.map(this.renderItem)}
-        <AddStep testId={this.props.match.params.testId} />
+        <AddStep testId={testId} update={this.update.bind(this, testId)} />
       </div>
     );
   }

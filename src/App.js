@@ -15,17 +15,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-
-        <nav>
-          <ul>
-            <li>
-              <Link to="/tests">tests</Link>
-            </li>
-            <li>
-              <Link to="/test/1">TestItem</Link>
-            </li>
-          </ul>
-        </nav>
+        <Link to="/tests">tests</Link>
         <hr />
         <Switch>
           <Route path="/tests" component={Tests} />

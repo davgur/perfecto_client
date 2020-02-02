@@ -11,7 +11,9 @@ class AddStep extends Component {
   }
 
   handleSubmit(event) {
-    this.addStep();
+    this.addStep().then(() => {
+      this.props.update();
+    });
     console.log(event);
     event.preventDefault();
   }

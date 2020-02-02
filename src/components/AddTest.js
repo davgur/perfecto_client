@@ -11,12 +11,14 @@ class AddTest extends Component {
   }
 
   handleSubmit(event) {
-    this.addStep();
+    this.addTest().then(() => {
+      this.props.update();
+    });
     console.log(event);
     event.preventDefault();
   }
 
-  addStep() {
+  addTest() {
     const { name, description } = this.state;
     const { testId }            = this.props;
 

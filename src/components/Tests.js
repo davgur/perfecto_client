@@ -11,9 +11,14 @@ class Tests extends PureComponent {
   }
 
   componentDidMount() {
+    this.update();
+  }
+
+  update() {
     this.askForData()
       .then(r => {
-        console.log(r);
+        if (!r)
+          return r;
         this.setState({ items: r });
       });
   }
@@ -24,26 +29,37 @@ class Tests extends PureComponent {
       .then(r => r.map(x => x.value));
   }
 
-  stop(id) {
+  handleStop(id) {
     return fetch('http://localhost:8080/test/stop', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ id })
-    });
+    }).then(this.update());
   }
 
-  renderItem(item, key) {
-    const { name, description, id } = item;
-    const href                      = `./test/${id}`;
+  handleStart(id) {
+    return fetch('http://localhost:8080/test/start', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id })
+    }).then(this.update());
+  }
+
+  renderItem(item) {
+    const { name, description, id, status } = item;
+    const href                              = `./test/${id}`;
     return (
-      <div key={key}>
+      <div key={id}>
         <a href={href}>
-          TestItem name: <em>{name}</em> description <em>{description}</em>
+          TestItem name: <em>{name}</em> description <em>{description}</em> status <em>{status}</em>
         </a>
 
-        <button onClick={e => this.stop(id)}>x</button>
+        <button onClick={e => this.handleStop(id)}>stop</button>
+        <button onClick={e => this.handleStart(id)}>start</button>
       </div>
     );
   }
@@ -51,8 +67,8 @@ class Tests extends PureComponent {
   render() {
     const { items } = this.state;
     return (<div>
-        {items.map(this.renderItem)}
-        <AddTest />
+        {items.map(x => this.renderItem(x))}
+        <AddTest update={this.update.bind(this)} />
       </div>
     );
   }
